@@ -17,3 +17,9 @@ export interface Product {
   creationAt?: string;
   updatedAt?: string;
 }
+
+export interface CreateProductDTO extends Omit<Product, 'id' | 'category'> {
+  categoryId: number;
+}
+
+export interface UpdateProductDTO extends Partial<CreateProductDTO> {}
