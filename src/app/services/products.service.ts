@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { retry } from 'rxjs/operators';
 
 import {
   CreateProductDTO,
@@ -20,9 +21,14 @@ export class ProductsService {
   }
 
   getProductsByPage(limit: number, offset: number) {
-    return this.http.get<Product[]>(`${this.apiUrl}`, {
-      params: { limit, offset },
-    });
+    return (
+      this.http
+        .get<Product[]>(`${this.apiUrl}`, {
+          params: { limit, offset },
+        })
+        // Intenta realizar una petición 3 veces si llega a dar un 404
+        .pipe(retry(3))
+    );
   }
 
   getProductId(id: string) {
