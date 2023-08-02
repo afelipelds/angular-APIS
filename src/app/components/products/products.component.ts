@@ -31,6 +31,16 @@ export class ProductsComponent implements OnInit {
     description: '',
   };
   initialTitle: string = 'No hay elementos';
+  limit = 10;
+  offset = 0;
+
+  getProductsByPage(limit: number, offset: number) {
+    return this.productsService
+      .getProductsByPage(limit, offset)
+      .subscribe((data) => {
+        this.products = offset !== 0 ? this.products.concat(data) : data;
+      });
+  }
 
   constructor(
     private storeService: StoreService,
@@ -40,9 +50,8 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productsService.getAllProducts().subscribe((data) => {
-      this.products = data;
-    });
+    // This calls only ten products when is the first change of the page on screen
+    this.getProductsByPage(this.limit, this.offset);
   }
 
   onAddToShoppingCart(product: Product) {
@@ -98,5 +107,9 @@ export class ProductsComponent implements OnInit {
       this.products.splice(productIndex, 1);
       this.showProductDetail = false;
     });
+  }
+
+  loadMoreProducts() {
+    this.getProductsByPage(this.limit, (this.offset += this.limit));
   }
 }
