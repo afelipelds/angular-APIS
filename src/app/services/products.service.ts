@@ -8,11 +8,13 @@ import {
   UpdateProductDTO,
 } from './../models/product.model';
 
+import { environment } from './../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-  private apiUrl = '/api/v1/products';
+  private apiUrl = `${environment.API_URL}/api/v1/products`;
 
   constructor(private http: HttpClient) {}
 
