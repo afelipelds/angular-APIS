@@ -12,7 +12,7 @@ import {
   providedIn: 'root',
 })
 export class ProductsService {
-  private apiUrl = 'https://api.escuelajs.co/api/v1/products';
+  private apiUrl = '/api/v1/products';
 
   constructor(private http: HttpClient) {}
 
