@@ -33,6 +33,7 @@ export class ProductsComponent implements OnInit {
   initialTitle: string = 'No hay elementos';
   limit = 10;
   offset = 0;
+  statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init';
 
   getProductsByPage(limit: number, offset: number) {
     return this.productsService
@@ -64,10 +65,18 @@ export class ProductsComponent implements OnInit {
   }
 
   onShowProductDetail(id: string) {
-    this.productsService.getProductId(id).subscribe((data) => {
-      this.toggleProductDetail();
-      this.productChosen = data;
-    });
+    this.statusDetail = 'loading';
+    this.toggleProductDetail();
+    this.productsService.getProductId(id).subscribe(
+      (data) => {
+        this.productChosen = data;
+        this.statusDetail = 'success';
+      },
+      (response) => {
+        this.statusDetail = 'error';
+        console.log('error occurred: ', response);
+      }
+    );
   }
 
   createNewProduct() {
