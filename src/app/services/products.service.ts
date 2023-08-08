@@ -4,7 +4,7 @@ import {
   HttpErrorResponse,
   HttpStatusCode,
 } from '@angular/common/http';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, retry, map } from 'rxjs/operators';
 
 import {
   CreateProductDTO,
@@ -28,14 +28,25 @@ export class ProductsService {
   }
 
   getProductsByPage(limit: number, offset: number) {
-    return (
-      this.http
-        .get<Product[]>(`${this.apiUrl}`, {
-          params: { limit, offset },
-        })
+    return this.http
+      .get<Product[]>(`${this.apiUrl}`, {
+        params: { limit, offset },
+      })
+      .pipe(
         // Intenta realizar una petición 3 veces si llega a dar un 404
-        .pipe(retry(3))
-    );
+        retry(3),
+        // Se agrega un campo más a la data - los productos - que llega del servicio
+        // lo que desde el frontend transforma la respuesta agregando más datos
+        map((products) =>
+          products.map((item) => {
+            return {
+              ...item,
+              // taxes está siendo agregado para trasformar la información de productos
+              taxes: 0.19 * item.price,
+            };
+          })
+        )
+      );
   }
 
   getProductId(id: string) {

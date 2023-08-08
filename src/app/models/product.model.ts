@@ -16,6 +16,7 @@ export interface Product {
   category: Category;
   creationAt?: string;
   updatedAt?: string;
+  taxes?: number;
 }
 
 export interface CreateProductDTO extends Omit<Product, 'id' | 'category'> {
