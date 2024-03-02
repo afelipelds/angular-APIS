@@ -1,8 +1,8 @@
 {
   "/api/*": {
-    "target": "https://api.escuelajs.co",
-    "secure": true,
+    "changeOrigin": true,
     "logLevel": "debug",
-    "changeOrigin": true
+    "secure": true,
+    "target": "https://api.escuelajs.co"
   }
 }

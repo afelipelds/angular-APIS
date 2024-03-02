@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpErrorResponse,
+  HttpParams,
   HttpStatusCode,
 } from '@angular/common/http';
 import { catchError, retry, map } from 'rxjs/operators';
@@ -23,8 +24,13 @@ export class ProductsService {
 
   constructor(private http: HttpClient) {}
 
-  getAllProducts() {
-    return this.http.get<Product[]>(this.apiUrl);
+  getAllProducts(limit?: number, offset?: number) {
+    let params = new HttpParams();
+    if (limit && offset) {
+      params = params.set('limit', limit);
+      params = params.set('offset', offset);
+    }
+    return this.http.get<Product[]>(this.apiUrl, { params });
   }
 
   getProductsByPage(limit: number, offset: number) {
@@ -35,10 +41,9 @@ export class ProductsService {
       .pipe(
         // Intenta realizar una petición 3 veces si llega a dar un 404
         retry(3),
-        // Se agrega un campo más a la data - los productos - que llega del servicio
-        // lo que desde el frontend transforma la respuesta agregando más datos
-        map((products) =>
-          products.map((item) => {
+        // Se agrega un campo más a la data (productos) que llega del servicio por medio de una trasnformación
+        map((products: Product[]) =>
+          products.map((item: Product) => {
             return {
               ...item,
               // taxes está siendo agregado para trasformar la información de productos
