@@ -13,10 +13,10 @@ export class UsersService {
   constructor(private usersServices: HttpClient) {}
 
   createUser(dto: CreateUserDTO) {
-    this.usersServices.post<User>(this.apiUrl, dto);
+    return this.usersServices.post<User>(this.apiUrl, dto);
   }
 
   getAllUsers() {
-    this.usersServices.get<User[]>(this.apiUrl);
+    return this.usersServices.get<User[]>(this.apiUrl);
   }
 }
