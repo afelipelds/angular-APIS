@@ -8,6 +8,8 @@ import {
 
 import { StoreService } from '../../services/store.service';
 import { ProductsService } from '../../services/products.service';
+import { switchMap } from 'rxjs/operators';
+import { zip } from 'rxjs';
 
 @Component({
   selector: 'app-products',
@@ -62,6 +64,40 @@ export class ProductsComponent implements OnInit {
 
   toggleProductDetail() {
     this.showProductDetail = !this.showProductDetail;
+  }
+
+  readAndUpdate(id: string) {
+    this.productsService
+      .getProductId(id)
+      .pipe(
+        switchMap((product) => {
+          return this.productsService.updateProduct(product.id, {
+            title: 'A great number of cases were found beneath the sun',
+          });
+        }),
+        switchMap((product) => {
+          return this.productsService.updateProduct(product.id, {
+            taxes: 2.01,
+          });
+        }),
+        switchMap((product) => {
+          return this.productsService.updateProduct(product.id, {
+            price: 450,
+          });
+        })
+      )
+      .subscribe((data) => {
+        console.log('data', { data });
+      });
+    zip(
+      this.productsService.getProductId(id),
+      this.productsService.updateProduct(id, {
+        title: 'A great number of cases were found beneath the sun',
+      })
+    ).subscribe((response) => {
+      const readDataResponse = response[0];
+      const updatedDataResponse = response[1];
+    });
   }
 
   onShowProductDetail(id: string) {
