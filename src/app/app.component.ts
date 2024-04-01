@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import { Product } from './models/product.model';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
 
@@ -12,6 +11,13 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   imgParent = '';
   showImg = true;
+  token = '';
+  user = {
+    avatar: 'https://imgur.com/gallery/bUZpbUe',
+    name: 'Jaya The Cat',
+    email: 'jaya@catch.me',
+    password: 'ImJayaTheCat',
+  };
 
   constructor(
     private usersServices: UsersService,
@@ -27,24 +33,27 @@ export class AppComponent {
   }
 
   createUser() {
+    // This is just an example of a creation
     this.usersServices
-      // This is just an example of a creation
-      .createUser({
-        avatar: 'https://imgur.com/gallery/bUZpbUe',
-        name: 'Cheese Cat',
-        email: 'cat@chee.se',
-        password: 'ilovecheese',
-      })
+      .createUser(this.user)
       .subscribe((res: any) =>
         console.log('this is the user created -> ', { res })
       );
   }
 
   loginUser() {
+    // This is just an example of user login using previous _credentials_
     this.authServices
-      .login({ email: 'cat@chee.se', password: 'ilovecheese' })
-      .subscribe((res) =>
-        console.log('this is the token -> ', res.access_token)
-      );
+      .login({
+        email: this.user.email,
+        password: this.user.password,
+      })
+      .subscribe((res) => (this.token = res.access_token));
+  }
+
+  getProfile() {
+    this.authServices.getProfileInfo(this.token).subscribe((profile) => {
+      console.log('profile', { profile });
+    });
   }
 }

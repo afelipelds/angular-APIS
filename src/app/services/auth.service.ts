@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthToken, LoginAuth } from '../models/auth.model';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,18 @@ export class AuthService {
     );
   }
 
-  getProfileInfo() {
-    return this.authServices.get(`${this.apiUrl}/profile`);
+  getProfileInfo(token: string) {
+    /*
+    // si se quisiera hacer dinámico, se usa HttpHeaders
+    const headers = new HttpHeaders();
+    headers.set('Authorization', `Bearer ${token}`);
+    */
+
+    // Esta es otra forma de enviar los headers
+    return this.authServices.get<User>(`${this.apiUrl}/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 }

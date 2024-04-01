@@ -35,7 +35,12 @@
       </ul>
     </nav>
     <div class="info">
-      <div class="account">andres.eslava@mycommer.ce</div>
+      <div class="account">
+        <button *ngIf="!token; else elseBlock" (click)="loginUser()">
+          Login the Cat
+        </button>
+        <ng-template #elseBlock>{{ profile?.email }}</ng-template>
+      </div>
       <div class="cart">
         <a href="">
           <img src="./assets/svg/icon_shopping_cart.svg" alt="logo" />
